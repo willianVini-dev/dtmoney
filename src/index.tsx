@@ -1,14 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {App} from './App';
-import {createServer} from "miragejs"
+import ReactDOM from 'react-dom';
+import { App } from './App';
+import { createServer } from "miragejs"
 
 
 createServer({
-  routes(){
+  routes() {
     this.namespace = 'api';
-    this.get('/transactions',()=>{
-      return[
+    this.get('/transactions', () => {
+      return [
         {
           id: 1,
           title: 'transactions 1',
@@ -22,12 +22,10 @@ createServer({
   }
 })
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById('root') as HTMLElement
 );
 
