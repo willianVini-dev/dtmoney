@@ -3,7 +3,8 @@ import { Container, TransactionsTypeContainer, RadioBox } from './styles';
 import iconeClose from '../../assets/botaoX.svg'
 import iconeEntrada from '../../assets/entradas.svg'
 import iconeSaida from '../../assets/saidas.svg'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+import {api} from '../../services/api'
 
 
 interface NewTranslationModalProps {
@@ -13,7 +14,18 @@ interface NewTranslationModalProps {
 }
 export function NewTranslationModal({ isOpen, onRequestClose }: NewTranslationModalProps) {
 
+  const [title, setTitle] = useState('');
+  const [value, setValue] = useState(0);
+  const [category, setCategory] = useState('');
   const [type, setType] = useState('deposit')
+
+
+  function handleCreateNewTranslation(event: FormEvent) {
+    event.preventDefault();
+    const data = { type, value, title, category }
+
+    api.post('/transactions', data)
+  }
 
   return (
     <>
@@ -30,17 +42,22 @@ export function NewTranslationModal({ isOpen, onRequestClose }: NewTranslationMo
         >
           <img src={iconeClose} alt="fechar modal" />
         </button>
-        <Container>
+        <Container onSubmit={handleCreateNewTranslation}>
           <h2>Cadastrar transação</h2>
 
           <input
             type="text"
             placeholder="Titulo"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
           />
 
           <input
             type="number"
             placeholder="Valor"
+            value={value}
+            onChange={e => setValue(Number(e.target.value))}
+
           />
 
           <TransactionsTypeContainer>
@@ -67,6 +84,8 @@ export function NewTranslationModal({ isOpen, onRequestClose }: NewTranslationMo
           <input
             type="text"
             placeholder="Categoria"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
           />
 
           <button type="submit">
