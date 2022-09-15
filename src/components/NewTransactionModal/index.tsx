@@ -3,8 +3,8 @@ import { Container, TransactionsTypeContainer, RadioBox } from './styles';
 import iconeClose from '../../assets/botaoX.svg'
 import iconeEntrada from '../../assets/entradas.svg'
 import iconeSaida from '../../assets/saidas.svg'
-import { FormEvent, useState } from 'react'
-import {api} from '../../services/api'
+import { FormEvent, useState, useContext } from 'react'
+import { useTransactions } from '../../hooks/useTransactions';
 
 
 interface NewTranslationModalProps {
@@ -14,17 +14,37 @@ interface NewTranslationModalProps {
 }
 export function NewTranslationModal({ isOpen, onRequestClose }: NewTranslationModalProps) {
 
+  // pegando as informção de dentro do contexto
+  const {createTransaction} = useTransactions()
+
   const [title, setTitle] = useState('');
   const [value, setValue] = useState(0);
   const [category, setCategory] = useState('');
   const [type, setType] = useState('deposit')
 
 
-  function handleCreateNewTranslation(event: FormEvent) {
+  // executandoe ssa função com o submit do formulario 
+  async function handleCreateNewTranslation(event: FormEvent) {
     event.preventDefault();
-    const data = { type, value, title, category }
 
-    api.post('/transactions', data)
+
+    // executando função que está vindo do contexto
+    await createTransaction({
+      title,
+      amount: value,
+      category,
+      type
+    })
+
+    // fechando o modal
+    onRequestClose()
+
+
+    // resetando as variaveis 
+    setTitle('')
+    setValue(0)
+    setCategory('')
+    setType('deposit')
   }
 
   return (
